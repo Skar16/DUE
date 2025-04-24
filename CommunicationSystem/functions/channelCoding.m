@@ -9,9 +9,38 @@
 % Example: decToBinVec(0 0 0 1 1 0 0) yields: 12
 %
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [outputArg1,outputArg2] = channelCoding(inputArg1,inputArg2)
+function [binMat_partiy] = channelCoding(binMat)
 
-outputArg1 = inputArg1;
-outputArg2 = inputArg2;
+N = 7;
+
+% Split Nx7 Matrix into 7x7 
+
+% matrix col and row
+[rows, cols] = size(binMat)
+
+% how many chunks are needed
+num_chunks = ceil(rows/N);
+
+% TODO split matrix into chunks of 7x7 and fill missing rows with * if not
+% factor of 7 
+
+
+
+% row parity, sum over colum with 7x7 * 7*x
+row_parity = mod(binMat * ones(7,1), 2);
+
+% colum parity, sum over row with 1x7 * 7x7
+col_parity = mod(ones(1,7) * binMat, 2);
+
+% bottom right parity
+corner_parity = mod(sum(row_parity), 2);
+
+% Assemble final 8x8 matrix
+binMat_partiy = [binMat, row_parity];              % Append row parity bits
+binMat_partiy = [binMat_partiy; [col_parity, corner_parity]]; % Append col parity bits + corner bit
+
+
+%disp(binMat_partiy)
+
 end
 
