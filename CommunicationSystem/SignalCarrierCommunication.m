@@ -9,32 +9,31 @@ clc
 clear
 close all
 %addpath('functions\');
-%% Definieren Sie eine Nachricht, 
-% die versendet werden soll:
+%% Define a message 
+% that should be transmitted:
 msg = 'Hallo hier ist eine wichtige Nachricht!';
-% Diese Nachricht stellt die Quelle für unsere Kommunikation dar.
+% This message represents the source for our communication.
 
-nBit = 7;       % Anzahl an Bits
+nBit = 7;       % Number of bits
 
-len = length(msg);  % Anzahl der Zeichen der Nachricht
-modulo = mod(len,nBit); % Vielfaches der Anzahl an Bits
+len = length(msg);  % Number of characters in the message
+modulo = mod(len,nBit); % Multiple of the number of bits
 
-% Auffüllen der Nachricht mit '*', um ein Vielfaches der Anzahl an Bits zu
-% bekommen
+% Padding the message with '*', to make it a multiple of the number of bits
 if modulo > 0
     for i = 1:(nBit-modulo)
         msg = append(msg,'*');
     end
 end
 
-binVec = sourceCoding(msg); % Quellkodierung
+binVec = sourceCoding(msg); % Source coding
 
-% decodedMsg = sourceDecoding(binVec); % Test, ob Quellkodierung geklappt hat
+% decodedMsg = sourceDecoding(binVec); % Test whether source coding worked
 
-binVec = channelCoding(binVec); % Kanalkodierung
+binVec = channelCoding(binVec); % Channel coding
 
-errorsDet = 0;  % Anzahl an Fehlern die erkannt wurden
+errorsDet = 0;  % Number of errors that were detected
 
-errorsCor = 0;  % Check ob ein Fehler korrigiert wurde
+errorsCor = 0;  % Check whether an error was corrected
 
-[binVec2, errorsDet, errorsCor] = channelDecoding(binVec)
+[binVec2, errorsDet, errorsCor] = channelDecoding(binVec);
