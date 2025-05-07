@@ -36,4 +36,4 @@ errorsDet = 0;  % Number of errors that were detected
 
 errorsCor = 0;  % Check whether an error was corrected
 
-[binVec2, errorsDet, errorsCor] = channelDecoding(binVec);
+%[binVec2, errorsDet, errorsCor] = channelDecoding(binVec);
