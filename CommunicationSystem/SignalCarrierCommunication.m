@@ -40,5 +40,6 @@ errorsCor = 0;  % Check whether an error was corrected
 numRows = size(binVec2, 1); %number of rows
 
 for i = 1:numRows
-    decodedMsg(i) = binVecToDec(binVec2(i,:)') 
+    %decodedMsg(i) = binVecToDec(binVec2(i,:)')
+    decodedMsg(i) = binVecToDec(binVec2(i,:))
 end
