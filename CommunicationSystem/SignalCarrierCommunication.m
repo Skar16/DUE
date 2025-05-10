@@ -41,5 +41,8 @@ numRows = size(binVec2, 1); %number of rows
 
 for i = 1:numRows
     %decodedMsg(i) = binVecToDec(binVec2(i,:)')
-    decodedMsg(i) = binVecToDec(binVec2(i,:))
+    chunk = binVec2(i,:)
+    decodedMsg(i) = binVecToDec(chunk)
 end
+
+print(decodedMsg)
