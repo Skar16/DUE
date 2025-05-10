@@ -1,0 +1,35 @@
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Name: Huber, Burandt
+% Date: 22.04.25
+%
+% 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function output = channelCoding(binVec)
+
+dimension = size(binVec);
+
+output = 0;
+parityRow = 0;
+parityCol = 0;
+N = 7;
+
+for i = 1:N:dimension(1)
+
+    cache = binVec(i:i+N,N);
+    for k = 1:N
+        parityRow(k) = mod(sum(cache(k,N)),2)
+    end
+
+    for k = 1:N
+        parityCol(k) = mod(sum(cache()))
+    end
+
+    if i == 1
+        output = cache;
+
+    else
+        output = [output ; cache ];
+
+    end
+end

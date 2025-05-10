@@ -1,0 +1,34 @@
+f%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Name: Huber, Burandt
+% Date: 22.04.25
+%
+% channelDecoding: 
+%
+% Input:    - binVec: binary vector 
+% Output:   - output: 
+%           - errorsDet: 
+%           - errorsCor: 
+%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [output, errorsDet, errorsCor] = channelDecoding(binVec)
+
+numBlocks = size(binVec,1) / 8;
+if mod(numBlocks,1) ~= 0
+    error('Input size must be a multiple of 8 rows');
+end
+
+errorsDet = 0;
+errorsCor = 0;
+output = [];
+
+
+for k = 1:numBlocks
+    block = binVec((k-1)*8+1:k*8,:); % extract 8x8 chunk, 0?
+
+    
+
+
+
+end
+
