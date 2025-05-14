@@ -6,19 +6,20 @@
 %
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [output,h] = pulseformFilter(inputVec,Nsam)
+function output = pulseformFilter(inputVec)
 
 Nsym = 6;
+Nsam = 8;
 
 alpha = [0.1 0.5 0.9];
 
-h = zeros(length(alpha),49);
+h = zeros()
 
 for k = 1:length(alpha)
 
-    h(k,:) = rcosdesign(alpha(k),Nsym,Nsam,'sqrt');
+h(k,:) = rcosdesign(alpha(k),Nsym,Nsam,'sqrt');
 
-    h(k,:) = h(k,:)./sum(h(k,:));
+h(k,:) = h(k,:)./sum(h(k,:));
 
 end
 x1 = 1:length(h);

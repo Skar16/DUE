@@ -14,8 +14,6 @@ nBit = log2(dimension);
 
 dimensionVec= length(inputVec);
 
-%output = zeros(1,dimensionVec/nBit);
-
 output = 1;
 
 for k = 1:2:dimensionVec
