@@ -13,6 +13,8 @@
 
 function [output, errorsDet, errorsCor] = channelDecoding(binVec)
 
+binVec = reshape(binVec,[],8);
+
 numBlocks = size(binVec,1) / 8;
 if mod(numBlocks,1) ~= 0
     error('Input size must be a multiple of 8 rows');

@@ -1,0 +1,62 @@
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Name: Huber, Burandt
+% Date: 14.05.25
+%
+% pulseformFilter(): 
+%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function output = pulseformFilter(inputVec)
+
+Nsym = 6;
+Nsam = 8;
+
+alpha = [0.1 0.5 0.9];
+
+h = zeros()
+
+for k = 1:length(alpha)
+
+h(k,:) = rcosdesign(alpha(k),Nsym,Nsam,'sqrt');
+
+h(k,:) = h(k,:)./sum(h(k,:));
+
+end
+x1 = 1:length(h);
+figure(1);
+subplot(2,1,1);
+plot(x1,h(1,:),x1,h(2,:),x1,h(3,:));
+grid on;
+
+H = zeros(1,128);
+
+x2 = 1:length(H);
+
+H(1,:) = fftshift(fft(h(1,:),128));
+H(2,:) = fftshift(fft(h(2,:),128));
+H(3,:) = fftshift(fft(h(3,:),128));
+
+
+subplot(2,1,2);
+plot(x2,abs(H(1,:)),x2,abs(H(2,:)),x2,abs(H(3,:)));
+grid on;
+
+inputVec = upsample(inputVec,Nsam);
+
+filterOutput = conv(inputVec,h(2,:),'same') .*Nsam;
+x3 = 1:length(filterOutput);
+
+figure(2);
+subplot(2,1,1);
+plot(filterOutput,LineWidth=1);
+hold on;
+stem(inputVec);
+hold off;
+grid on;
+
+%noise = randn(1,length(filterOutput));
+
+%filterOutput = filterOutput + noise;
+
+output = filterOutput;
+
