@@ -55,4 +55,8 @@ for i = 1:N:dimension(1)
         % Otherwise, concatenate the new block to the existing output
         output = [output ; cache];
     end
+
+
 end
+
+output = output(:)';
