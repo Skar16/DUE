@@ -1,4 +1,4 @@
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+f%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Name: Huber, Burandt
 % Date: 22.04.25
 %
@@ -30,9 +30,6 @@ for k = 1:numBlocks
     rowParityCheck = mod(sum(block(:,1:7), 2), 2);
     rowParityError = rowParityCheck ~= block(:,8);
 
-  % Check column parities (including the parity row)
-    colParityCheck = mod(sum(block(1:7,:), 1), 2);
-    colParityError = colParityCheck ~= block(8,:);
 
     % Count number of errors in rows and columns
     numRowErrors = sum(rowParityError(1:7));
@@ -53,10 +50,10 @@ for k = 1:numBlocks
         end
 
        % Append corrected data (7x7 block)
-    output = [output; block(1:7,1:7)];
+    outputData = [outputData; block(1:7,1:7)];
 end
 
      % Pass concatenated data to binToDec function
-    %output = binToDec(outputData);
+    output = binToDec(outputData);
 end
 

@@ -8,7 +8,7 @@
 clc
 clear
 close all
-%addpath('functions\');
+addpath('functions\');
 %% Define a message 
 % that should be transmitted:
 msg = 'Hallo hier ist eine wichtige Nachricht!';
@@ -36,4 +36,13 @@ errorsDet = 0;  % Number of errors that were detected
 
 errorsCor = 0;  % Check whether an error was corrected
 
-%[binVec2, errorsDet, errorsCor] = channelDecoding(binVec);
+[binVec2, errorsDet, errorsCor] = channelDecoding(binVec);
+numRows = size(binVec2, 1); %number of rows
+
+for i = 1:numRows
+    %decodedMsg(i) = binVecToDec(binVec2(i,:)')
+    chunk = binVec2(i,:)
+    decodedMsg(i) = binVecToDec(chunk)
+end
+
+print(decodedMsg)
