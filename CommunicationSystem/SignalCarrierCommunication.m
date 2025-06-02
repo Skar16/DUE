@@ -11,7 +11,7 @@ close all
 % addpath('functions\');
 % Define a message 
 % that should be transmitted:
-msg = 'Hallo hier ist eine wichtige Nachricht!';
+msg = 'Erst hiernach wird es wirklich wichtig. Hallo hier ist eine wichtige Nachricht!';
 % This message represents the source for our communication.
 
 nBit = 7;       % Number of bits
@@ -35,7 +35,12 @@ binVec = channelCoding(binVec); % Channel coding
 %    decodedMsg(i) = binVecToDec(chunk);
 % end
 
-alphabet = [-3 ;-1; 1; 3]; % aplhabet for mapping
+%alphabet = [-3 ;-1; 1; 3]; % aplhabet for mapping
+
+% 16-QAM Alphabet (Gray sortiert erwartet)
+re = [-3 -1 1 3];
+im = [-3; -1; 1; 3];
+alphabet = reshape(re + 1i * im, [], 1);  % Zeilenweise sortiert (Gray-kodiert vorausgesetzt)
 
 binVec = symbolMapping(binVec,alphabet);
 
