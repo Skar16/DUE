@@ -1,28 +1,49 @@
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Name: Huber, Burandt
-% Date: 12.05.25
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% symbolDemapping - Wandelt Symbole aus dem Alphabet wieder in Bits um.
 %
-% symbolDemapping(): 
+% INPUTS:
+%   inputVec : Vektor mit Symbolen (reell oder komplex)
+%   alphabet : Vektor oder Matrix mit Symbolen (muss zu Gray-Code passen!)
 %
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OUTPUT:
+%   output : Bitvektor (1xN)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-function output = symbolDemapping(inputVec,alphabet)
+function output = symbolDemapping(inputVec, alphabet)
 
-nBit = log2(size(alphabet,1));
+    % Anzahl Bits pro Symbol
+    dimension = numel(alphabet);
+    nBit = log2(dimension);
+    
+    if mod(nBit,1) ~= 0
+        error('Alphabetgröße ist keine Zweierpotenz.');
+    end
 
-output = 1;
+    output = [];
 
-for k = 1:length(inputVec)
+    for k = 1:length(inputVec)
+        symbol = inputVec(k);
 
-    mapped = inputVec(k);
-    index = find(alphabet == mapped);
-    bits = int2bit(index-1,nBit);
+        % Numerisch stabiler Vergleich: geringster Abstand zum Alphabet
+        [~, index] = min(abs(alphabet - symbol));  % robust auch für komplexe Zahlen
 
-    if k == 1
-        output = bits';
-    else
-        output(end+1:end+2) = bits';
+        % Gray -> Binär rückwandeln
+        grayVal = index - 1;
+        binVal = gray2bin(grayVal);
+
+        % Binärzahl → Bitvektor (nBit Länge, MSB zuerst)
+        bits = de2bi(binVal, nBit, 'left-msb');
+
+        output = [output bits];
     end
 end
 
+% Hilfsfunktion: wandelt Gray-Code in Binärzahl (Integer)
+function bin = gray2bin(gray)
+    bin = gray;
+    while gray > 0
+        gray = bitshift(gray, -1);
+        bin = bitxor(bin, gray);
+    end
+end
 
