@@ -9,16 +9,20 @@
 function output = matchedFilter(inputVec,h,binVec,Nsam)
 
 
+binVec = upsample(binVec,Nsam);
 
+figure(3);
 filterOutput2 = conv(inputVec,h(2,:),'same');
+x = 1:length(filterOutput2);
 subplot(2,1,2);
-plot(filterOutput2,LineWidth=1);
+plot(x,filterOutput2,LineWidth=1);
+x2 = 1:length(binVec);
 hold on;
-stem(binVec);
+stem(x2,binVec);
 hold off;
 grid on;
 
-figure(3);
+figure(4);
 cache = reshape(filterOutput2,2*Nsam, []);
 plot(cache);
 
@@ -34,7 +38,7 @@ for k = 1:Nsam:length(filterOutput2)
 
 end
 
-figure(4);
+figure(5);
 stem(symbols);
 hold on;
 
