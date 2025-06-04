@@ -11,42 +11,68 @@ function output = matchedFilter(inputVec,h,binVec,Nsam)
 
 binVec = upsample(binVec,Nsam);
 
+filterOutput2_r = conv(real(inputVec),h(2,:),'same');
+filterOutput2_i = conv(imag(inputVec),h(2,:),'same');
+
+filterOutput2 = filterOutput2_r + 1i * filterOutput2_i;
+
 figure(3);
-filterOutput2 = conv(inputVec,h(2,:),'same');
+
+
 x = 1:length(filterOutput2);
 subplot(2,1,2);
-plot(x,filterOutput2,LineWidth=1);
-x2 = 1:length(binVec);
+plot(x,filterOutput2_r,LineWidth=1);
+x2 = 1:length(real(binVec));
 hold on;
-stem(x2,binVec);
+stem(x2,real(binVec));
 hold off;
 grid on;
 
-figure(4);
-cache = reshape(filterOutput2,2*Nsam, []);
-plot(cache);
+
+% figure(15);
+% cache = reshape(filterOutput2_r,2*Nsam, []);
+% plot(cache);
 
 
-symbols = 1;
+symbols_r = 1;
+symbols_i = 1;
 
-for k = 1:Nsam:length(filterOutput2)
+for k = 1:Nsam:length(filterOutput2_r)
     if k == 1
-        symbols = filterOutput2(k);
+        symbols_r = filterOutput2_r(k);
     else
-        symbols(end+1) = filterOutput2(k);
+        symbols_r(end+1) = filterOutput2_r(k);
+    end
+
+end
+for k = 1:Nsam:length(filterOutput2_i)
+    if k == 1
+        symbols_i = filterOutput2_i(k);
+    else
+        symbols_i(end+1) = filterOutput2_i(k);
     end
 
 end
 
-figure(5);
-stem(symbols);
-hold on;
-
+symbols_r = upsample(symbols_r,Nsam);
+symbols_i = upsample(symbols_i,Nsam);
+symbols = symbols_r + symbols_i * 1i;
 
 symbols_rounded = round(symbols);
-stem(symbols_rounded)
+
+
+
+figure(5);
+plot(filterOutput2_r);
+hold on;
+stem(symbols_r);
+stem(real(symbols_rounded));
 grid on;
+legend('filterOutput','symbols','rounded symbols');
 hold off;
-symbols_rounded(1) = 3; % Wert manuell gändert, da Filter noch nicht eingeschwungen
+
+symbols_rounded = downsample(symbols_rounded,Nsam); % upsampled for plot
+
+
 
 output = symbols_rounded;

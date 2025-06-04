@@ -42,14 +42,16 @@ grid on;
 
 inputVec = upsample(inputVec,Nsam);
 
-filterOutput = conv(inputVec,h(2,:),'same') .*Nsam;
+filterOutput_r = conv(real(inputVec),h(2,:),'same') .*Nsam;
+filterOutput_i = conv(imag(inputVec),h(2,:),'same') .*Nsam;
+filterOutput = filterOutput_r + 1i * filterOutput_i; 
 x3 = 1:length(filterOutput);
 
 figure(3);
 subplot(2,1,1);
-plot(x3,filterOutput,LineWidth=1);
+plot(x3,filterOutput_r,LineWidth=1);
 hold on;
-stem(inputVec);
+stem(real(inputVec));
 hold off;
 grid on;
 
