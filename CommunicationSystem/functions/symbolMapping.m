@@ -36,7 +36,7 @@ function output = symbolMapping(inputVec, alphabet)
 
     % Wenn komplex, Konstellationsdiagramm plotten
     if ~isreal(alphabet)
-        figure(10);
+        figure(1);
         scatter(real(output), imag(output), 'filled');
         grid on;
         axis equal;

@@ -46,98 +46,91 @@ binVec = symbolMapping(binVec,alphabet);
 
 Nsam = 8;
 
-% now pulseformFilter
-% Nsym = 6;
-% Nsam = 8;
-% 
-% alpha = [0.1 0.5 0.9];
-% 
-% for k = 1:length(alpha)
-% 
-% h(k,:) = rcosdesign(alpha(k),Nsym,Nsam,'sqrt');
-% 
-% h(k,:) = h(k,:)./sum(h(k,:));
-% 
-% end
-% x1 = 1:length(h);
-% figure(1);
-% subplot(2,1,1);
-% plot(x1,h(1,:),x1,h(2,:),x1,h(3,:));
-% grid on;
-% 
-% H = zeros(1,128);
-% 
-% x2 = 1:length(H);
-% 
-% H(1,:) = fftshift(fft(h(1,:),128));
-% H(2,:) = fftshift(fft(h(2,:),128));
-% H(3,:) = fftshift(fft(h(3,:),128));
-% 
-% 
-% subplot(2,1,2);
-% plot(x2,abs(H(1,:)),x2,abs(H(2,:)),x2,abs(H(3,:)));
-% grid on;
-% 
-% binVec = upsample(binVec,Nsam);
-% 
-% filterOutput = conv(binVec,h(2,:),'same') .*8;
-% x3 = 1:length(filterOutput);
-% 
-% figure(2);
-% subplot(2,1,1);
-% plot(filterOutput,LineWidth=1);
-% hold on;
-% stem(binVec);
-% hold off;
-% grid on;
-% 
-% %noise = randn(1,length(filterOutput));
-% 
-% %filterOutput = filterOutput + noise;
-
 [filterOutput,h] = pulseformFilter(binVec,Nsam);
 
+f_sa = 48000; % sample frequency 48kHz
+f_c = 10000;   % carrier frequency 10kHz
+
+spektrum = abs(fftshift(fft(filterOutput)));
+f = (-length(filterOutput)/2:length(filterOutput)/2-1)/length(filterOutput) * f_sa;
+
+figure('Name',"Komplexes Signal nach dem Pulsformfilter");
+subplot(3,1,1);
+plot(f,spektrum);
+title("Betragsspektrum des komplexen Signals nach dem Pulsformfilter");
+grid on;
+
+s_TX = modulation(filterOutput,f_c,f_sa);
+s_TX_ampd = 2 .* s_TX;  % need the doubled amplitude so that it can matched in the match filter
+
+s_TX_spek = abs(fftshift(fft(s_TX_ampd)));
+
+
+subplot(3,1,2);
+plot(f,s_TX_spek);
+title("Betragsspektrum des Sendesignals nach der Modulation");
+grid on;
+
+
+%% backpath
+
+% Prepare audio devices
+dac = audioDeviceWriter(f_sa,"Device",'Speakers (USB Audio CODEC )');
+microphoneID = audiodevinfo(1,'Microphone (USB Audio CODEC )'); 
+adc = audiorecorder(f_sa,16,1,microphoneID);
+
+adc.record();
+disp('Start')
+pause(2)
+
+dac.play([zeros(10000,1); s_TX_ampd'; zeros(10000,1)]);
+
+pause(2)
+disp('Stop')
+adc.stop();
+s_RX = adc.getaudiodata()';
+
+figure(10);
+plot(s_RX');
+
+s_RX = s_RX(:,151700:153800);
+
+figure(11);
+plot(s_RX');
+
+
+s_p = demodulation(s_RX,f_c,f_sa);
+
+% add noise:
+% P_N = 1;
+% s_RX = s_TX_ampd + P_N * randn(size(s_TX_ampd));
+% s_p = demodulation(s_RX,f_c,f_sa);
+
+
+
+s_p_spek = abs(fftshift(fft(s_p)));
+
+f2 = (-length(s_p)/2:length(s_p)/2-1)/length(s_p) * f_sa;
+
+figure(4);
+subplot(3,1,3);
+plot(f2,s_p_spek);
+title("Betragspektrum des Basisbandsignals");
+grid on;
+
+
 % now matchedFilter
-symbols_rounded = matchedFilter(filterOutput,h,binVec,Nsam);
+symbols_rounded = matchedFilter(s_p,h,binVec,Nsam);
 
-% 
-% filterOutput2 = conv(filterOutput,h(2,:),'same');
-% subplot(2,1,2);
-% plot(filterOutput2,LineWidth=1);
-% hold on;
-% stem(binVec);
-% hold off;
-% grid on;
-% 
-% figure(3);
-% cache = reshape(filterOutput2,2*Nsam, []);
-% plot(cache);
-% 
-% 
-% symbols = 1;
-% 
-% for k = 1:Nsam:length(filterOutput2)
-%     if k == 1
-%         symbols = filterOutput2(k);
-%     else
-%         symbols(end+1) = filterOutput2(k);
-%     end
-% 
-% end
-% 
-% figure(4);
-% stem(symbols);
-% hold on;
-% 
-% 
-% symbols_rounded = round(symbols);
-% stem(symbols_rounded)
-% grid on;
-% hold off;
-% symbols_rounded(1) = 3; % Wert manuell gändert, da Filter noch nicht eingeschwungen
+figure(6);
+scatter(real(output), imag(output), 'filled');
+grid on;
+axis equal;
+xlabel('Re-Achse');
+ylabel('Im-Achse');
+title('Konstellationsdiagramm nach dem Kanal');
 
-
-%%
+%
 binVec = symbolDemapping(symbols_rounded,alphabet);
 
 errorsDet = 0;  % Number of errors that were detected
