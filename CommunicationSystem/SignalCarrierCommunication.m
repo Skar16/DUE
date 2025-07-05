@@ -54,7 +54,7 @@ f_c = 10000;   % carrier frequency 10kHz
 spektrum = abs(fftshift(fft(filterOutput)));
 f = (-length(filterOutput)/2:length(filterOutput)/2-1)/length(filterOutput) * f_sa;
 
-figure('Name',"Komplexes Signal nach dem Pulsformfilter");
+figure(20);
 subplot(3,1,1);
 plot(f,spektrum);
 title("Betragsspektrum des komplexen Signals nach dem Pulsformfilter");
@@ -123,7 +123,7 @@ grid on;
 symbols_rounded = matchedFilter(s_p,h,binVec,Nsam);
 
 figure(6);
-scatter(real(output), imag(output), 'filled');
+scatter(real(symbols_rounded), imag(symbols_rounded), 'filled');
 grid on;
 axis equal;
 xlabel('Re-Achse');
